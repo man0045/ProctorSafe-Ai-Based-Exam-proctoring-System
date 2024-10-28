@@ -6,3 +6,5 @@ opencv
 tensorflow
 pyaudio
 SpeechRecognition
+mysql-connector-python
+opencv-python

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script src="{{ url_for('static', filename='js/capture.js') }}"></script>
+</head>
+<body>
+    <h2>Register</h2>
+    <form action="{{ url_for('register') }}" method="POST">
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        
+        <video id="video" autoplay></video><br>
+        <button type="button" id="capture-btn">Capture Image</button>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <input type="hidden" name="captured_image" id="captured_image"><br>
+        
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
