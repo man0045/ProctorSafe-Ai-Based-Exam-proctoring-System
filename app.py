@@ -1,12 +1,8 @@
-from flask import Flask, render_template
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 import random
 import smtplib
-import cv2
 import base64
-from io import BytesIO
-from PIL import Image
 import hashlib
 
 app = Flask(__name__)
@@ -47,6 +43,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = hash_password(request.form['password'])
+        role = request.form['role']  # Get role from the form (e.g., 'teacher' or 'student')
         otp = random.randint(1000, 9999)
 
         # Capture image from hidden form input
@@ -55,8 +52,8 @@ def register():
         image_blob = base64.b64decode(image_data)
         
         # Save user info and OTP in the database
-        cursor.execute("INSERT INTO users (username, email, password, otp, image) VALUES (%s, %s, %s, %s, %s)",
-                       (username, email, password, otp, image_blob))
+        cursor.execute("INSERT INTO users (username, email, password, role, otp, image) VALUES (%s, %s, %s, %s, %s, %s)",
+                       (username, email, password, role, otp, image_blob))
         db.commit()
         
         # Send OTP via email
@@ -82,26 +79,48 @@ def verify():
             flash("Invalid OTP. Please try again.")
     return render_template('verify.html')
 
-# Login route
+# Login route with role-based redirection
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = hash_password(request.form['password'])
-        cursor.execute("SELECT password FROM users WHERE email=%s", (email,))
-        db_password = cursor.fetchone()
         
-        if db_password and db_password[0] == password:
-            flash("Login successful!")
-            return redirect(url_for('dashboard'))
+        # Retrieve user information along with role
+        cursor.execute("SELECT password, role FROM users WHERE email=%s", (email,))
+        user = cursor.fetchone()
+        
+        if user and user[0] == password:
+            role = user[1]
+            session['email'] = email
+            session['role'] = role
+            
+            # Redirect based on role
+            if role == 'teacher':
+                return redirect(url_for('teacher_dashboard'))
+            elif role == 'student':
+                return redirect(url_for('student_dashboard'))
         else:
             flash("Invalid email or password.")
     return render_template('login.html')
 
+# Teacher dashboard route
+@app.route('/teacher_dashboard')
+def teacher_dashboard():
+    if 'role' in session and session['role'] == 'teacher':
+        return render_template('professor_dashboard.html')
+    return redirect(url_for('login'))
+
+# Student dashboard route
+@app.route('/student_dashboard')
+def student_dashboard():
+    if 'role' in session and session['role'] == 'student':
+        return render_template('student_dashboard.html')
+    return redirect(url_for('login'))
+
 @app.route('/dashboard')
 def dashboard():
     return "Welcome to the dashboard!"
-
 
 @app.route('/')
 def index():
@@ -111,16 +130,9 @@ def index():
 def about():
     return render_template('faq.html', title="Mostly Asked question")
 
-# @app.route('/register')
-# def register():
-#     return render_template('register.html', title="Register pages")
-# @app.route('/login')
-# def login():
-#     return render_template('login.html', title="login")
-
 @app.route('/contact')
 def contact():
-    return render_template('contact.html', title = "Contact pages")
+    return render_template('contact.html', title="Contact pages")
 
 if __name__ == '__main__':
     app.run(debug=True)
