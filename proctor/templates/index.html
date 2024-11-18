@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generate Questions & Answers</title>
+
+    <!-- Bootstrap CSS for responsiveness -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <!-- Animate.css for animations -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+
+    <!-- FontAwesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <style>
+      /* Custom CSS for additional styling */
+      body {
+        background-color: #f0f8ff;
+        font-family: "Arial", sans-serif;
+      }
+
+      .container {
+        margin-top: 50px;
+        max-width: 800px;
+        background-color: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-title {
+        font-size: 2.5rem;
+        color: #4caf50;
+        margin-bottom: 30px;
+      }
+
+      .form-group label {
+        font-weight: bold;
+      }
+
+      textarea,
+      select,
+      input {
+        font-size: 1rem;
+      }
+
+      .btn {
+        background-color: #4caf50;
+        color: white;
+        border-radius: 30px;
+        font-size: 1.25rem;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+      }
+
+      /* Add animation on scroll or load */
+      @keyframes slideInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Animating form elements and result */
+      .animate-up {
+        animation: slideInUp 1s ease forwards;
+      }
+
+      /* Result styling */
+      #output {
+        background-color: #f9f9f9;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .output-title {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .output-item {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+      }
+
+      .output-item::before {
+        content: "\f129";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        margin-right: 10px;
+        color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container animate__animated animate__fadeIn">
+      <h1 class="header-title text-center animate__animated animate__bounceIn">
+        Generate Questions & Answers
+      </h1>
+
+      <form id="questionForm" class="p-3 animate__animated animate__fadeInUp">
+        <div class="form-group">
+          <label for="inputText">Input Text:</label>
+          <textarea
+            class="form-control"
+            id="inputText"
+            rows="5"
+            placeholder="Enter your paragraph here..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="questionType">Choose Question Type:</label>
+          <select class="form-control" id="questionType">
+            <option value="objective">Objective</option>
+            <option value="subjective">Subjective</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="numQuestions">Number of Questions:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="numQuestions"
+            placeholder="Enter number of questions"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-block animate__animated animate__fadeInUp"
+          onclick="generateQuestions()"
+        >
+          <i class="fas fa-question-circle"></i> Generate Questions
+        </button>
+      </form>
+
+      <!-- Output section -->
+      <div id="output" class="animate-up"></div>
+    </div>
+
+    <!-- Script for handling question generation -->
+    <script>
+      function generateQuestions() {
+        const inputText = document.getElementById("inputText").value;
+        const questionType = document.getElementById("questionType").value;
+        const numQuestions = document.getElementById("numQuestions").value;
+        const output = document.getElementById("output");
+
+        // Clear previous results
+        output.innerHTML = "";
+        output.classList.remove("animate-up");
+
+        // Simulating question generation and displaying results
+        setTimeout(() => {
+          output.classList.add("animate-up");
+          output.innerHTML = `
+                    <h2 class="output-title">Generated Questions</h2>
+                    <p class="output-item">1. What is discussed in this sentence: "${inputText.slice(
+                      0,
+                      50
+                    )}..."?</p>
+                    <p class="output-item">2. Explain the significance of: "${inputText.slice(
+                      50,
+                      100
+                    )}..."</p>
+                    <p class="output-item">3. Define key terms related to: "${inputText.slice(
+                      100,
+                      150
+                    )}..."</p>
+                `;
+        }, 500);
+      }
+    </script>
+
+    <!-- Bootstrap JS (optional, for better form handling) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
